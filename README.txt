@@ -17,7 +17,7 @@ It is about 25x faster than python-pbkdf2.
 The PBKDF2 function was added to Nettle at 2012-09-12 (first released with
 Nettle 2.6, SO version 4.4). It is possible to have libnettle.so in a non-
 standard location and set the environment variable NDNKDF_PATH acccordingly
-(see 'Performance' below).
+(something like `NDNKDF_PATH=/path/to/nettle/lib python setup.py test`).
 
 =============
  Basic usage
