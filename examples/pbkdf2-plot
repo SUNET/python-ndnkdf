@@ -1,0 +1,140 @@
+#!/usr/bin/python
+#
+# Copyright (c) 2012, NORDUnet A/S
+# All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or
+#   without modification, are permitted provided that the following
+#   conditions are met:
+#
+#     1. Redistributions of source code must retain the above copyright
+#        notice, this list of conditions and the following disclaimer.
+#     2. Redistributions in binary form must reproduce the above
+#        copyright notice, this list of conditions and the following
+#        disclaimer in the documentation and/or other materials provided
+#        with the distribution.
+#     3. Neither the name of the NORDUnet nor the names of its
+#        contributors may be used to endorse or promote products derived
+#        from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+# Author : Fredrik Thulin <fredrik@thulin.net>
+#
+
+"""
+Small script to generate a comparision between the standard python-pbkdf2
+and the (significantly faster) NDNKDF, using PBKDF2-HMAC-SHA512 from libnettle.
+"""
+
+import os
+import sys
+import ndnkdf
+import timeit
+
+try:
+    from pbkdf2 import PBKDF2
+except ImportError:
+    sys.stderr.write("python-pbkdf2 not available, get it from https://www.dlitz.net/software/python-pbkdf2/\n")
+    sys.exit(1)
+
+import hmac as HMAC
+from hashlib import sha512 as SHA512
+
+iter_count = 15
+
+#salt = os.urandom(12)
+salt = "salt"
+read_bytes = 64
+passphrase = "This passphrase is a secret."
+iterations = 0
+
+try:
+    # need path to very recent Nettle
+    nettle = ndnkdf.NDNKDF()
+except ndnkdf.NDNKDF_LibraryError, e:
+    sys.stderr.write("Failed loading Nettle library : %s\n" % (e))
+    sys.stderr.write("\n")
+    sys.stderr.write("If the Nettle library to use is installed somewhere outside the systems normal library\n")
+    sys.stderr.write("search path, the location can be specified using the environment variable NDNKDF_PATH.\n")
+    sys.exit(1)
+
+def do_plot(iter_list, res_c, res_python):
+    """
+    Make plot of the results, if matplotlib is available.
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
+    ax.set_title('PBKDF2-HMAC-SHA512 time')
+    ax.set_ylabel('milliseconds')
+    ax.set_xlabel('iterations')
+
+    ind = np.arange(len(res_python))  # the x locations for the groups
+    width = 0.35       # the width of the bars
+
+    bar1 = ax.bar(ind + 0, res_python, width, color='g')
+    bar2 = ax.bar(ind + width, res_c, width, color='b')
+
+    ax.set_xticks(ind + width)
+    ax.set_xticklabels(iter_list)
+
+    ax.legend( (bar1[0], bar2[0]), ('Python', 'Nettle'), loc = 2 )
+
+    plt.show()
+
+def runonce_Python():
+    x = PBKDF2(passphrase, salt, iterations=iterations, \
+                   macmodule=HMAC, \
+                   digestmodule=SHA512).read(read_bytes)
+    print "Python: %s" % (x.encode('hex'))
+
+def runonce_Nettle():
+    x = nettle.pbkdf2_hmac_sha512(passphrase, iterations, salt)
+    print "Nettle: %s" % (x.encode('hex'))
+
+iter_list = []
+res_c = []
+res_python = []
+
+for n in range(4, iter_count):
+    repeats = 10
+    iterations = 2 ** n
+
+    iter_list.append(iterations)
+
+    t = timeit.timeit('runonce_Python()', setup='from __main__ import runonce_Python', number=repeats)
+    millis = (t / repeats) * 1000
+    print "PBKDF2-HMAC-SHA512 (Python) %i iterations (N=%-2i) : %s ms" % (iterations, n, millis)
+    res_python.append(millis)
+
+    t = timeit.timeit('runonce_Nettle()', setup='from __main__ import runonce_Nettle', number=repeats)
+    millis = (t / repeats) * 1000
+    print "PBKDF2-HMAC-SHA512 (nettle) %i iterations (N=%-2i) : %s ms" % (iterations, n, millis)
+    res_c.append(millis)
+
+print ""
+print "PBKDF2-HMAC-SHA512 benchmark result :"
+print ""
+for i in range(len(iter_list)):
+    print "  N=%6i -> Python == %5i ms, Nettle == %5i ms" % (iter_list[i], res_python[i], res_c[i])
+print ""
+
+try:
+    do_plot(iter_list, res_c, res_python)
+except ImportError:
+    print("Numpy or plotting library unavailable.")
