@@ -12,5 +12,5 @@ setup(name		= 'ndnkdf',
       license		= 'BSD',
       packages		= find_packages(),
       test_suite	= "ndnkdf.tests.suite",
-      test_requires	= ['unittest2', 'pbkdf2'],
+      tests_require	= ['unittest2', 'pbkdf2'],
      )
