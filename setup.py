@@ -11,5 +11,6 @@ setup(name		= 'ndnkdf',
       url		= 'http://www.nordu.net/',
       license		= 'BSD',
       packages		= find_packages(),
-      test_suite	= "ndnkdf.tests.suite"
+      test_suite	= "ndnkdf.tests.suite",
+      test_requires	= ['unittest2', 'pbkdf2'],
      )
