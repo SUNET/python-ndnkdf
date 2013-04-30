@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2012, NORDUnet A/S
+# Copyright (c) 2012, 2013 NORDUnet A/S
 # All rights reserved.
 #
 #   Redistribution and use in source and binary forms, with or
@@ -35,7 +35,7 @@
 import platform
 
 if platform.python_version() < '2.7':
-    unittest = __import__('unittest2')
+    import unittest2 as unittest
 else:
     import unittest
 
