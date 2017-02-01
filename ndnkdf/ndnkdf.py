@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2012, 2013 NORDUnet A/S
+# Copyright (c) 2012, 2013, 2017 NORDUnet A/S
 # All rights reserved.
 #
 #   Redistribution and use in source and binary forms, with or
@@ -62,12 +62,13 @@ class NDNKDF():
         self.nettle = ctypes.cdll.LoadLibrary(self.name)
         # check for the functions we use - the PBKDF2 function was added 2012-09-12
         # (appeared in Nettle version 2.6, SO version 4.4).
-        if not hasattr(self.nettle, 'nettle_hmac_sha512_update'):
-            raise NDNKDF_LibraryError('Nettle library missing function nettle_hmac_sha512_update()')
-        if not hasattr(self.nettle, 'nettle_hmac_sha512_digest'):
-            raise NDNKDF_LibraryError('Nettle library missing function nettle_hmac_sha512_digest()')
-        if not hasattr(self.nettle, 'nettle_pbkdf2'):
-            raise NDNKDF_LibraryError('Nettle library missing function nettle_pbkdf2()')
+        for func in ['nettle_hmac_sha512_set_key',
+                     'nettle_hmac_sha512_update',
+                     'nettle_hmac_sha512_digest',
+                     'nettle_pbkdf2',
+                     ]:
+            if not hasattr(self.nettle, func):
+                raise NDNKDF_LibraryError('Nettle library missing function {!s}()'.format(func))
 
     def pbkdf2_hmac_sha512(self, key, iterations, salt):
         """
