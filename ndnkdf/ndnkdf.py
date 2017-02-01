@@ -78,13 +78,15 @@ class NDNKDF():
         # sha512ctx is a C struct consisting of three sha512_ctx. I calculate them to be
         # 148 bytes each, but let's just fake it with an opaque buffer of 1024 bytes.
         sha512ctx = ctypes.create_string_buffer('', size = 1024)
-        self.nettle.nettle_hmac_sha512_set_key(ctypes.byref(sha512ctx), len(key), key)
-        self.nettle.nettle_pbkdf2( \
-            ctypes.byref(sha512ctx), \
-                self.nettle.nettle_hmac_sha512_update, \
-                self.nettle.nettle_hmac_sha512_digest, \
-                self._DIGEST_SIZE, int(iterations), \
-                len(salt), salt, \
-                self._DIGEST_SIZE, ctypes.byref(buf) \
+        self.nettle.nettle_hmac_sha512_set_key(ctypes.byref(sha512ctx),
+                                               ctypes.c_size_t(len(key)),
+                                               key)
+        self.nettle.nettle_pbkdf2(
+            ctypes.byref(sha512ctx),
+                self.nettle.nettle_hmac_sha512_update,
+                self.nettle.nettle_hmac_sha512_digest,
+                ctypes.c_size_t(self._DIGEST_SIZE), int(iterations),
+                ctypes.c_size_t(len(salt)), salt,
+                ctypes.c_size_t(self._DIGEST_SIZE), ctypes.byref(buf)
                 )
         return buf.raw
