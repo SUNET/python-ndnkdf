@@ -23,7 +23,7 @@ setup(name		= 'ndnkdf',
       url		= 'https://www.nordu.net/',
       license		= 'BSD',
       packages		= ['ndnkdf',],
-      package_dir       = {'': 'ndnkdf'},
+      package_dir       = {'': 'src'},
       zip_safe		= False,
       extras_require    = {
         'testing': testing_extras,
