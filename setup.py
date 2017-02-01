@@ -17,14 +17,15 @@ testing_extras = [
 setup(name		= 'ndnkdf',
       version		= '0.2',
       description	= 'Fast PBKDF2-HMAC-SHA512 using Nettle',
+      long_description  = README,
       author		= 'Fredrik Thulin',
       author_email	= 'fredrik@thulin.net',
       url		= 'https://www.nordu.net/',
       license		= 'BSD',
-      packages		= find_packages(),
-      test_suite	= "ndnkdf.tests.suite",
+      packages		= ['ndnkdf',],
+      package_dir       = {'': 'ndnkdf'},
       zip_safe		= False,
-      extras_require={
+      extras_require    = {
         'testing': testing_extras,
         },
      )
