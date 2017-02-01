@@ -35,7 +35,7 @@
 """
 the NDNKDF package
 
-Copyright (c) 2012, 2013 NORDUnet A/S
+Copyright (c) 2012, 2013, 2017 NORDUnet A/S
 See the source file for complete license statement.
 
 Basic usage ::
@@ -46,7 +46,7 @@ Basic usage ::
   print n.pbkdf2_hmac_sha512('passwd', 1, 'salt').encode('hex')
 """
 
-__version__ = '0.1'
+__version__ = '0.2'
 __copyright__ = 'NORDUnet A/S'
 __organization__ = 'NORDUnet'
 __license__ = 'BSD'
