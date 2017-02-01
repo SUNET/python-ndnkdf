@@ -19,6 +19,10 @@ Nettle 2.6, SO version 4.4). It is possible to have libnettle.so in a non-
 standard location and set the environment variable NDNKDF_PATH acccordingly
 (something like `NDNKDF_PATH=/path/to/nettle/lib python setup.py test`).
 
+Sometime between version 2.6 and 3.2, Nettle changed to using size_t's.
+This made Python dump core, and ndnkdf has been changed to use size_t's
+which means it probably doesn't work with older Nettle now.
+
 =============
  Basic usage
 =============
