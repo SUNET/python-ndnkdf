@@ -13,4 +13,5 @@ setup(name		= 'ndnkdf',
       packages		= find_packages(),
       test_suite	= "ndnkdf.tests.suite",
       tests_require	= ['unittest2', 'pbkdf2'],
+      zip_safe		= False,
      )
