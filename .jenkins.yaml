@@ -1,0 +1,4 @@
+python_module: ndnkdf
+python_source_directory: ndnkdf
+publish_over_ssh: pypi.sunet.se
+clean_workspace: true
