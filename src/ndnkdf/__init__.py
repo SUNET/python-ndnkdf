@@ -52,9 +52,8 @@ __organization__ = 'NORDUnet'
 __license__ = 'BSD'
 __authors__ = ['Fredrik Thulin']
 
-__all__ = ["NDNKDF",
-           ]
+__all__ = [
+    "NDNKDF",
+]
 
-from .ndnkdf import NDNKDF
-from .ndnkdf import NDNKDF_Error
-from .ndnkdf import NDNKDF_LibraryError
+from .ndnkdf import NDNKDF, NDNKDF_Error, NDNKDF_LibraryError

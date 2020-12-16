@@ -32,17 +32,20 @@
 # Author : Fredrik Thulin <fredrik@thulin.net>
 #
 
-import os
 import ctypes
 import ctypes.util
+import os
+
 
 class NDNKDF_Error(Exception):
     pass
 
+
 class NDNKDF_LibraryError(NDNKDF_Error):
     pass
 
-class NDNKDF():
+
+class NDNKDF:
 
     _DIGEST_SIZE = 64
 
@@ -62,11 +65,12 @@ class NDNKDF():
         self.nettle = ctypes.cdll.LoadLibrary(self.name)
         # check for the functions we use - the PBKDF2 function was added 2012-09-12
         # (appeared in Nettle version 2.6, SO version 4.4).
-        for func in ['nettle_hmac_sha512_set_key',
-                     'nettle_hmac_sha512_update',
-                     'nettle_hmac_sha512_digest',
-                     'nettle_pbkdf2',
-                     ]:
+        for func in [
+            'nettle_hmac_sha512_set_key',
+            'nettle_hmac_sha512_update',
+            'nettle_hmac_sha512_digest',
+            'nettle_pbkdf2',
+        ]:
             if not hasattr(self.nettle, func):
                 raise NDNKDF_LibraryError('Nettle library missing function {!s}()'.format(func))
 
@@ -74,19 +78,20 @@ class NDNKDF():
         """
         Invoke nettle PBKDF2 using HMAC-SHA-512 on key, iterations and salt.
         """
-        buf = ctypes.create_string_buffer('', size = self._DIGEST_SIZE)
+        buf = ctypes.create_string_buffer('', size=self._DIGEST_SIZE)
         # sha512ctx is a C struct consisting of three sha512_ctx. I calculate them to be
         # 148 bytes each, but let's just fake it with an opaque buffer of 1024 bytes.
-        sha512ctx = ctypes.create_string_buffer('', size = 1024)
-        self.nettle.nettle_hmac_sha512_set_key(ctypes.byref(sha512ctx),
-                                               ctypes.c_size_t(len(key)),
-                                               key)
+        sha512ctx = ctypes.create_string_buffer('', size=1024)
+        self.nettle.nettle_hmac_sha512_set_key(ctypes.byref(sha512ctx), ctypes.c_size_t(len(key)), key)
         self.nettle.nettle_pbkdf2(
             ctypes.byref(sha512ctx),
-                self.nettle.nettle_hmac_sha512_update,
-                self.nettle.nettle_hmac_sha512_digest,
-                ctypes.c_size_t(self._DIGEST_SIZE), int(iterations),
-                ctypes.c_size_t(len(salt)), salt,
-                ctypes.c_size_t(self._DIGEST_SIZE), ctypes.byref(buf)
-                )
+            self.nettle.nettle_hmac_sha512_update,
+            self.nettle.nettle_hmac_sha512_digest,
+            ctypes.c_size_t(self._DIGEST_SIZE),
+            int(iterations),
+            ctypes.c_size_t(len(salt)),
+            salt,
+            ctypes.c_size_t(self._DIGEST_SIZE),
+            ctypes.byref(buf),
+        )
         return buf.raw

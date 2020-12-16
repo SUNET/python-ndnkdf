@@ -42,13 +42,16 @@ else:
 import ndnkdf.tests.test_basic
 import ndnkdf.tests.test_compare
 
-test_modules = [ndnkdf.tests.test_basic,
-                ndnkdf.tests.test_compare,
-                ]
+test_modules = [
+    ndnkdf.tests.test_basic,
+    ndnkdf.tests.test_compare,
+]
+
 
 def additional_tests():
     tests = [unittest.TestLoader().loadTestsFromModule(this) for this in test_modules]
     return unittest.TestSuite(tests)
+
 
 if __name__ == '__main__':
     unittest.main()

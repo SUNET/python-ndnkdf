@@ -41,8 +41,8 @@ else:
 
 import ndnkdf
 
-class TestBasics(unittest.TestCase):
 
+class TestBasics(unittest.TestCase):
     def setUp(self):
 
         self.ndnkdf = ndnkdf.NDNKDF()
@@ -50,5 +50,8 @@ class TestBasics(unittest.TestCase):
     def test_known_values(self):
         """ Test with known values. """
         res = self.ndnkdf.pbkdf2_hmac_sha512('passwd', 1, 'salt').encode('hex')
-        self.assertEquals(res, "c74319d99499fc3e9013acff597c23c5baf0a0bec5634c46b8352b793e324"
-                          "723d55caa76b2b25c43402dcfdc06cdcf66f95b7d0429420b39520006749c51a04e")
+        self.assertEquals(
+            res,
+            "c74319d99499fc3e9013acff597c23c5baf0a0bec5634c46b8352b793e324"
+            "723d55caa76b2b25c43402dcfdc06cdcf66f95b7d0429420b39520006749c51a04e",
+        )

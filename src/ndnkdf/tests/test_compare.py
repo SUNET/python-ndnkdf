@@ -39,10 +39,11 @@ if platform.python_version() < '2.7':
 else:
     import unittest
 
-import ndnkdf
-
 import hmac as HMAC
 from hashlib import sha512 as SHA512
+
+import ndnkdf
+
 
 class TestCompare(unittest.TestCase):
 
@@ -53,14 +54,26 @@ class TestCompare(unittest.TestCase):
     The other PBKDF2 implementation should be, or be compatible with, the one found at
     https://www.dlitz.net/software/python-pbkdf2/
     """
-    keys = ['', chr(0) * 8, chr(0) * 64, chr(0) * 100,
-            'passwd', 'This is a secret passphrase.',
-            'pass\0word',
-            'a', 'a' * 32,
-            ]
-    salts = ['', chr(0) * 8, 'saltSALTsaltSALTsalt', 'NaCL',
-             'a', 'a' * 32,
-             ]
+
+    keys = [
+        '',
+        chr(0) * 8,
+        chr(0) * 64,
+        chr(0) * 100,
+        'passwd',
+        'This is a secret passphrase.',
+        'pass\0word',
+        'a',
+        'a' * 32,
+    ]
+    salts = [
+        '',
+        chr(0) * 8,
+        'saltSALTsaltSALTsalt',
+        'NaCL',
+        'a',
+        'a' * 32,
+    ]
     iterations = [1, 5, 100, 256]
 
     def setUp(self):
@@ -73,6 +86,7 @@ class TestCompare(unittest.TestCase):
             from pbkdf2 import PBKDF2
         except ImportError:
             import sys
+
             sys.stderr.write("python-pbkdf2 not available, get it from https://www.dlitz.net/software/python-pbkdf2/\n")
             sys.exit(1)
         self.other_pbkdf2 = PBKDF2
@@ -83,7 +97,7 @@ class TestCompare(unittest.TestCase):
             for salt in self.salts:
                 for iteration in self.iterations:
                     nettle_res = self.ndnkdf.pbkdf2_hmac_sha512(key, iteration, salt)
-                    other_res = self.other_pbkdf2(key, salt, iterations=iteration, \
-                                                      macmodule=HMAC, \
-                                                      digestmodule=SHA512).read(self.ndnkdf._DIGEST_SIZE)
+                    other_res = self.other_pbkdf2(
+                        key, salt, iterations=iteration, macmodule=HMAC, digestmodule=SHA512
+                    ).read(self.ndnkdf._DIGEST_SIZE)
         self.assertEquals(nettle_res, other_res)
