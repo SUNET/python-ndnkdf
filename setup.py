@@ -18,7 +18,7 @@ testing_extras = [
 
 setup(
     name='ndnkdf',
-    version='0.2',
+    version='0.3',
     description='Fast PBKDF2-HMAC-SHA512 using Nettle',
     long_description=README,
     author='Fredrik Thulin',
