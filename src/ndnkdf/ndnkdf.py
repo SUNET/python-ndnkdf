@@ -74,14 +74,14 @@ class NDNKDF:
             if not hasattr(self.nettle, func):
                 raise NDNKDF_LibraryError('Nettle library missing function {!s}()'.format(func))
 
-    def pbkdf2_hmac_sha512(self, key, iterations, salt):
+    def pbkdf2_hmac_sha512(self, key: bytes, iterations: int, salt: bytes) -> bytes:
         """
         Invoke nettle PBKDF2 using HMAC-SHA-512 on key, iterations and salt.
         """
-        buf = ctypes.create_string_buffer('', size=self._DIGEST_SIZE)
+        buf = ctypes.create_string_buffer(b'', size=self._DIGEST_SIZE)
         # sha512ctx is a C struct consisting of three sha512_ctx. I calculate them to be
         # 148 bytes each, but let's just fake it with an opaque buffer of 1024 bytes.
-        sha512ctx = ctypes.create_string_buffer('', size=1024)
+        sha512ctx = ctypes.create_string_buffer(b'', size=1024)
         self.nettle.nettle_hmac_sha512_set_key(ctypes.byref(sha512ctx), ctypes.c_size_t(len(key)), key)
         self.nettle.nettle_pbkdf2(
             ctypes.byref(sha512ctx),

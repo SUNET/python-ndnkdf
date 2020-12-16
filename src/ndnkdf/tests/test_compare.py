@@ -56,23 +56,23 @@ class TestCompare(unittest.TestCase):
     """
 
     keys = [
-        '',
-        chr(0) * 8,
-        chr(0) * 64,
-        chr(0) * 100,
-        'passwd',
-        'This is a secret passphrase.',
-        'pass\0word',
-        'a',
-        'a' * 32,
+        b'',
+        bytes(8),
+        bytes(64),
+        bytes(100),
+        b'passwd',
+        b'This is a secret passphrase.',
+        b'pass\0word',
+        b'a',
+        b'a' * 32,
     ]
     salts = [
-        '',
-        chr(0) * 8,
-        'saltSALTsaltSALTsalt',
-        'NaCL',
-        'a',
-        'a' * 32,
+        b'',
+        bytes(8),
+        b'saltSALTsaltSALTsalt',
+        b'NaCL',
+        b'a',
+        b'a' * 32,
     ]
     iterations = [1, 5, 100, 256]
 
@@ -93,6 +93,8 @@ class TestCompare(unittest.TestCase):
 
     def test_and_compare_values(self):
         """ Test and compare result with other PBKDF2 implementation. """
+        nettle_res = None
+        other_res = False
         for key in self.keys:
             for salt in self.salts:
                 for iteration in self.iterations:

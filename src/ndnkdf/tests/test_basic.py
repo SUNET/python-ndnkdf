@@ -32,12 +32,7 @@
 # Author : Fredrik Thulin <fredrik@thulin.net>
 #
 
-import platform
-
-if platform.python_version() < '2.7':
-    import unittest2 as unittest
-else:
-    import unittest
+import unittest
 
 import ndnkdf
 
@@ -49,7 +44,7 @@ class TestBasics(unittest.TestCase):
 
     def test_known_values(self):
         """ Test with known values. """
-        res = self.ndnkdf.pbkdf2_hmac_sha512('passwd', 1, 'salt').encode('hex')
+        res = self.ndnkdf.pbkdf2_hmac_sha512(b'passwd', 1, b'salt').hex()
         self.assertEquals(
             res,
             "c74319d99499fc3e9013acff597c23c5baf0a0bec5634c46b8352b793e324"
