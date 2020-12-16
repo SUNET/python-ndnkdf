@@ -45,8 +45,7 @@ class TestBasics(unittest.TestCase):
     def test_known_values(self):
         """ Test with known values. """
         res = self.ndnkdf.pbkdf2_hmac_sha512(b'passwd', 1, b'salt').hex()
-        self.assertEquals(
-            res,
-            "c74319d99499fc3e9013acff597c23c5baf0a0bec5634c46b8352b793e324"
-            "723d55caa76b2b25c43402dcfdc06cdcf66f95b7d0429420b39520006749c51a04e",
+        assert (
+            res == "c74319d99499fc3e9013acff597c23c5baf0a0bec5634c46b8352b793e324"
+            "723d55caa76b2b25c43402dcfdc06cdcf66f95b7d0429420b39520006749c51a04e"
         )

@@ -93,8 +93,6 @@ class TestCompare(unittest.TestCase):
 
     def test_and_compare_values(self):
         """ Test and compare result with other PBKDF2 implementation. """
-        nettle_res = None
-        other_res = False
         for key in self.keys:
             for salt in self.salts:
                 for iteration in self.iterations:
@@ -102,4 +100,4 @@ class TestCompare(unittest.TestCase):
                     other_res = self.other_pbkdf2(
                         key, salt, iterations=iteration, macmodule=HMAC, digestmodule=SHA512
                     ).read(self.ndnkdf._DIGEST_SIZE)
-        self.assertEquals(nettle_res, other_res)
+                    assert nettle_res == other_res
