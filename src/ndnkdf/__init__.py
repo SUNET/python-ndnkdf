@@ -46,7 +46,7 @@ Basic usage ::
   print n.pbkdf2_hmac_sha512('passwd', 1, 'salt').encode('hex')
 """
 
-__version__ = '0.2'
+__version__ = '0.3'
 __copyright__ = 'NORDUnet A/S'
 __organization__ = 'NORDUnet'
 __license__ = 'BSD'
