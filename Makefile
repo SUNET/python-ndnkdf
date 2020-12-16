@@ -1,7 +1,7 @@
 SOURCE=	src
 
 test:
-	pytest
+	PYTHONPATH=$(SOURCE) pytest
 
 reformat:
 	isort --line-width 120 --atomic --project eduid_common --recursive $(SOURCE)
