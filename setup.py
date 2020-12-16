@@ -7,11 +7,12 @@ from setuptools import setup
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
+install_requires = [
+    'pbkdf2',
+]
+
 testing_extras = [
-    'nose==1.2.1',
-    'nosexcover==1.0.8',
     'coverage==3.6',
-    'unittest2',
     'pbkdf2',
 ]
 
@@ -27,5 +28,6 @@ setup(
     packages=['ndnkdf',],
     package_dir={'': 'src'},
     zip_safe=False,
+    install_requires=install_requires,
     extras_require={'testing': testing_extras,},
 )
