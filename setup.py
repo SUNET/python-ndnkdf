@@ -7,14 +7,9 @@ from setuptools import setup
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.txt')).read()
 
-install_requires = [
-    'pbkdf2',
-]
-
-testing_extras = [
-    'coverage==3.6',
-    'pbkdf2',
-]
+install_requires = [x for x in open(os.path.join(here, 'requirements.txt')).read().split('\n') if len(x) > 0]
+testing_extras = [x for x in open(os.path.join(here, 'test_requirements.txt')).read().split('\n')
+                  if len(x) > 0 and not x.startswith('-')]
 
 setup(
     name='ndnkdf',
